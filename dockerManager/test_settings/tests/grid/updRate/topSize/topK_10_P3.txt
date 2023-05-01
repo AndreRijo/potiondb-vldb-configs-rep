@@ -1,0 +1,141 @@
+//Client IPs
+//Number of clients
+11
+//IPs
+dahu-14:6666
+dahu-15:6666
+dahu-16:6666
+dahu-17:6666
+dahu-20:6666
+dahu-19:6666
+dahu-21:6666
+dahu-22:6666
+dahu-23:6666
+dahu-25:6666
+dahu-19:6668
+
+//5+10+60=75 (give +5 of reserve)
+//Test time (seconds)
+80
+//2
+//Number of tests
+20
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+12
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_0
+//Number of entries for this variable
+10
+//Values for variable, one per line
+8
+16
+24
+32
+40
+48
+56
+64
+72
+80
+
+//
+CLIENT_SIZE
+LOOP_0
+10
+//Values for variable, one per line
+5_8
+5_16
+5_24
+5_32
+5_40
+5_48
+5_56
+5_64
+5_72
+5_80
+
+//
+//
+TEST_NAME_PRE
+SPLIT
+2
+/go/results/1SF/dahu/5MIX/automated/bench/TOP_SIZE/TOPK
+/go/results/1SF/dahu/5MIX/automated/bench/TOP_SIZE/TOPSUM
+///go/results/debug
+
+//
+CONFIG_EXTRA
+SPLIT
+1
+TOP_BIG
+
+//
+CRDT_TYPE
+SPLIT
+2
+TOPK
+TOPSUM
+
+//
+KEYS
+SPLIT
+1
+20
+
+//
+OPS_PER_TXN
+LOOP
+1
+7
+
+//
+UPD_RATE
+LOOP_1
+1
+0.25
+
+//
+UPDATE_FUNCS
+SPLIT
+1
+[add,rem]
+
+//
+QUERY_FUNCS
+SPLIT
+1
+[topn]
+
+//
+TOP_SIZE
+SPLIT
+1
+10
+
+//
+N_REPEATS
+LOOP_2
+1
+0

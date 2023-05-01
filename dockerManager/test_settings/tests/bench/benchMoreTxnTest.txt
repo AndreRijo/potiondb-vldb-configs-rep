@@ -1,0 +1,87 @@
+//Client IPs
+//Number of clients
+2
+//IPs
+node5:6666
+node6:6666
+
+//Test time (seconds)
+85
+//2
+//Number of tests
+168
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-167
+0-167
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+6
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_0
+//Number of entries for this variable
+7
+//Values for variable, one per line
+12
+24
+48
+72
+96
+144
+192
+
+//
+TEST_NAME_PRE
+SPLIT
+1
+/go/results/1SF/2_April/8CPU/automated/bench/set1000/moreTxnOpsTest
+///go/results/debug
+
+//
+KEY_TYPE
+SPLIT
+1
+SHARED
+
+//
+OPS_PER_TXN
+SPLIT
+4
+14
+28
+56
+112
+
+//
+UPD_RATE
+LOOP_1
+6
+0
+0.001
+0.01
+0.1
+0.5
+1
+
+//
+CLIENT_SIZE
+LOOP_0
+7
+//Values for variable, one per line
+2_12
+2_24
+2_48
+2_72
+2_96
+2_144
+2_192
+
+//keyType -> opsPerTxn -> update_rates -> clients

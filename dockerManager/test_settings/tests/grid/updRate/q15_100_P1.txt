@@ -1,0 +1,154 @@
+//Client IPs
+//Number of clients
+11
+//IPs
+dahu-14:6666
+dahu-13:6666
+dahu-16:6666
+dahu-17:6666
+dahu-18:6666
+dahu-19:6666
+dahu-21:6666
+dahu-22:6666
+dahu-23:6666
+dahu-25:6666
+dahu-19:6668
+//chetemi-1:6666
+//chetemi-3:6666
+//chetemi-4:6666
+//chetemi-5:6666
+//chetemi-6:6666
+//chetemi-7:6666
+//chetemi-9:6666
+//chetemi-10:6666
+//chetemi-11:6666
+//chetemi-12:6666
+//chetemi-7:6668
+
+//30+65+60=155
+//Test time (seconds)
+120
+//2
+//Number of tests
+9
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-8
+0-8
+0-8
+0-8
+0-8
+0-8
+0-8
+0-8
+0-8
+0-8
+0-8
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+13
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP
+//Number of entries for this variable
+9
+//Values for variable, one per line
+8
+16
+24
+32
+40
+48
+56
+64
+80
+
+//
+CLIENT_SIZE
+LOOP_0
+9
+//Values for variable, one per line
+5_8
+5_16
+5_24
+5_32
+5_40
+5_48
+5_56
+5_64
+5_80
+
+//
+TEST_NAME_PRE
+LOOP_1
+1
+/go/results/1SF/dahu/5MIX/automated/CRDT_test_tpch/noTC/100
+///go/results/debug
+
+//
+CONFIG_EXTRA
+LOOP
+1
+Q15/
+
+//
+QUERY_SIZE
+LOOP
+1
+100
+
+//
+INDEX_NAME
+SPLIT
+1
+globalIndex
+
+//
+IS_GLOBAL
+LOOP
+1
+true
+
+//
+SINGLE_SERVER
+LOOP
+1
+false
+
+//
+LOCAL_MODE
+SPLIT
+1
+server
+
+//
+UPD_RATE
+SPLIT
+1
+0.1
+
+//
+N_READS_TXN
+LOOP
+1
+7
+
+//
+USE_TC
+LOOP
+1
+false
+
+//
+N_REPEATS
+LOOP_2
+1
+0
+

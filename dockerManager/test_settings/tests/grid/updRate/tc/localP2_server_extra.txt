@@ -1,0 +1,148 @@
+//Client IPs
+//Number of clients
+11
+//IPs
+dahu-14:6666
+dahu-13:6666
+dahu-16:6666
+dahu-17:6666
+dahu-18:6666
+dahu-19:6666
+dahu-21:6666
+dahu-22:6666
+dahu-23:6666
+dahu-25:6666
+dahu-19:6668
+
+//30+65+60=155
+//Test time (seconds)
+160
+//2
+//Number of tests
+16
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+11
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_0
+//Number of entries for this variable
+16
+//Values for variable, one per line
+576
+640
+704
+768
+896
+1024
+1280
+1536
+2048
+2560
+3072
+3584
+4096
+6144
+8192
+16384
+
+
+//
+CLIENT_SIZE
+LOOP_0
+16
+//Values for variable, one per line
+5_576
+5_640
+5_704
+5_768
+5_896
+5_1024
+5_1280
+5_1536
+5_2048
+5_2560
+5_3072
+5_3584
+5_4096
+5_6144
+5_8192
+5_16384
+
+//
+TEST_NAME_PRE
+SPLIT
+1
+/go/results/1SF/dahu/5MIX/automated/redo/updRate/localData/tc
+///go/results/debug
+
+//
+INDEX_NAME
+SPLIT
+1
+localIndex_server_postFix
+
+//
+IS_GLOBAL
+LOOP
+1
+false
+
+//
+SINGLE_SERVER
+LOOP
+1
+false
+
+//
+LOCAL_MODE
+SPLIT
+1
+server
+
+//
+UPD_RATE
+LOOP_1
+1
+0.15
+
+//
+N_READS_TXN
+LOOP
+1
+1
+//23
+
+//
+USE_TC
+LOOP
+1
+true
+
+//
+N_REPEATS
+LOOP_2
+1
+0
+//1
+//2

@@ -1,0 +1,1121 @@
+Repairing; local_server
+	Q3: OK
+	Q5: need to repeat 640, 704, 768. 
+	Q11: need to repeat 448, 512. 512 was added just now.
+	Q14: need to repeat 512, 576, 640, 704, 768.
+	Q15: need to repeat 512
+	Q18: need to repeat 512, 576, 640, 704, 768.
+
+	File1: 11-12,25,37-38,51,63-64,77
+	File2: nope
+	File3: 8-10,17-21,28-32,41-43,50-54,61-65,74-76,83-87,94-98
+
+"11-12,25,37-38,51,63-64,77|8-10,17-21,28-32,41-43,50-54,61-65,74-76,83-87,94-98"
+
+
+
+Maybe I should use higher ulimit for long tests?
+
+Q14: 5_56-5_80 repeat 2 needs to be... repeated
+	5_64, 5_80 also needs repeat of 1
+
+	148,149,237-239
+
+Q15: 5_64 repeat 2
+
+
+Some of the tests >= 160 need to be repeated.
+
+
+Local_server_tc
+Q3
+	224: nRepeats0,2 (6,26)
+	256: 1,2 (17,27)
+	288,320: 1,2 (18,19,28,29)
+
+	6,17-19,26-29
+	
+Q15
+	320: nRepeats2 (66)
+	
+
+In theory I have to repeat all single_redirect. Theory aside...
+TC:
+	Q3: 36-80
+	Q5: 48-80
+	Q11: OK
+	Q14: 44-80
+	Q15: 28-80
+	Q18: 44-80
+	
+
+
+
+Local_direct, noTC
+Need more Q5.
+Repeats:
+	Q5 - 5_40, 5_48, 5_56
+	
+Q3 is OK; Q14 is in Q5; Q15 is in Q14; Q18 is in Q15; Q5 is in Q11; Q11 is in Q18 
+Q5 and Q18 have wrong number of clients.
+Q5 -> Q14; wtf
+Q14 -> Q15; OK to
+Q15 -> Q18;
+Q11 -> Q5;
+Q18 -> Q11;
+Repeats: 21-23, 69-71, 117-119
+
+Local_server, noTC
+Need more Q11. Need more Q14 and Q18. More Q5 too
+Repeats:
+	Q5, Q11 - 5_6, 5_10, 5_14
+	Q14, Q18 - 28, 32, 40, 48, 56
+
+Q3 is OK; Q14 is in Q5; Q15 is in Q11; Q18 is in Q15; Q5 is in Q14; Q11 is in Q18
+Q14, Q18, Q5, Q11 have wrong number of clients
+Q5 -> Q14
+Q11 -> Q15
+Q15 -> Q18
+Q14 -> Q5
+Q18 -> Q11
+Repeats: 12,14,16,22,24,26,52,54,56,62,64,66,92,94,96,102,104,106 
+	 7,8,9,10,11,19,20,21,22,23,31,32,33,34,35,43,44,45,46,47,55,56,57,58,59,67,68,69,70,71
+7-11,19-23,31-35,43-47,55-59,67-71
+
+Probably needs less clients
+TC: P1, P3
+	0-12,26-38,52-64
+	0-10,33-43,66-76
+
+Probably needs more clients
+NoTC: P1
+	0-9,20-29,40-49,60-69,80-89,100-109
+	
+
+docker pull andrerj/priv:potiondb ; cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode passive
+docker pull andrerj/priv:tpch ; cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode active
+docker pull andrerj/priv:tpch ; cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6668 --saveLog true --mode active
+
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode passive
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode active
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6668 --saveLog true --mode active
+5_20
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 5,6,7,8,9,10 --repair "137-143|0-65|0-233|0-119|0-71|0-116|0-89|0-29|0-71|0-29|0-98|0-269"
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 5,6,7,8,9,10 --repair "0-125|0-95|0-38|0-233|0-119|0-71|0-116|0-89|0-29|0-71|0-29|0-98|"
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 5,6,7,8,9,10 --repair "11-12,25,37-38,51,63-64,77|8-10,17-21,28-32,41-43,50-54,61-65,74-76,83-87,94-98"
+
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 5,6,7,8,9,10 --repair "0-71|29-83|0-26|0-35|0-32|0-29|0-32|0-107|0-71|0-116|0-65|0-35"
+
+Need to repair Q5/Q11 of local_redirect (ideally later on, repair Q3/Q14/Q15/Q18 too of local_redirect. Also repair entirety of singleIndQ_redirectP1)
+
+singleIndQ_redirectP2: start at 29
+
+
+Skipped: localIndQ_directP1, globalIndQ, globalIndQ_2, singleIndQ_P1, singleIndQ_P2
+Done: localIndQ_server
+Doing: singleIndQ_redirect
+The last 5 are the TC ones. Others after singleIndQ_redirect are Q11.
+
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+
+
+
+20
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+
+
+
+
+//Global
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ.txt
+
+
+
+//Global
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_2.txt
+
+
+
+
+//Global
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/globalIndQ_3.txt
+
+
+
+//Local
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP1.txt
+
+
+
+//Local
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP2.txt
+
+
+
+//Local
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_directP3.txt
+
+
+
+//Single
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P1.txt
+
+
+
+//Single
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P2.txt
+
+
+
+
+//Single
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=0 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_P3.txt
+
+
+
+//Local_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP1.txt
+
+
+
+//Local_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP2.txt
+
+
+
+//Local_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/localIndQ_serverP3.txt
+
+
+
+//Single_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP1.txt
+
+
+
+//Single_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP2.txt
+
+
+
+//Single_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/noTC/singleIndQ_redirectP3.txt
+
+
+
+
+//Local_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP1.txt
+
+
+
+
+//Local_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/localIndQ_serverP2.txt
+
+
+
+
+//Single_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP1.txt
+
+
+
+//Single_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP2.txt
+
+
+
+//Single_redirect
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R1 -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R2 -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R3 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R4 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -e RABBITMQ_VHOST=/crdts -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/singleTC/R5 -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=#USE_TC# -e POOL_MAX=100 --name potiondb andrerj/priv:potiondb
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+5
+sleep 30s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#DATALOAD/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=true -e SF=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+6
+sleep 32s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+7
+sleep 37s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX2/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+8
+sleep 42s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX3/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+9
+sleep 47s ; docker rm tpch1 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX4/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+10
+sleep 62s ; docker rm tpch2 ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/1SF/#CONFIG_EXTRA#MIX5/ -e TEST_NAME=#TEST_NAME_PRE#/#INDEX_NAME#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e GLOBAL_INDEX=#IS_GLOBAL# -e SINGLE_INDEX_SERVER=#SINGLE_SERVER# -e UPD_RATE=#UPD_RATE# -e N_READS_TXN=#N_READS_TXN# -e BATCH_MODE=CYCLE -e LATENCY_MODE=PER_BATCH -e LOCAL_MODE=#LOCAL_MODE# -e LOCAL_REGION_ONLY=true -e SF=1 -e NON_RANDOM_SERVERS=true -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/individualQuery/tc/singleIndQ_redirectP3.txt
+

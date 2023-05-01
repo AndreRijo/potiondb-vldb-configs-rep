@@ -1,0 +1,104 @@
+//Client IPs
+//Number of clients
+8
+//IPs
+node1:6666
+node2:6666
+node3:6666
+node4:6666
+node5:6666
+node6:6666
+node7:6666
+node8:6666
+
+//Test time (seconds)
+340
+//2
+//Number of tests
+20
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-19
+0-19
+0-19
+0-19
+0-19
+0-19
+0-19
+0-19
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+8
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP
+//Number of entries for this variable
+5
+//Values for variable, one per line
+24
+48
+72
+96
+120
+
+
+//
+TEST_NAME_PRE
+SPLIT
+1
+/go/results/1SF/2_April/8CPU/automated/readCommited/test1/PER_BATCH
+///go/results/debug
+
+//
+INDEX_NAME
+LOOP
+1
+globalIndex
+
+//
+IS_GLOBAL
+LOOP
+1
+true
+
+//
+SINGLE_SERVER
+LOOP
+1
+false
+
+//
+TEST_TYPE
+SPLIT
+4
+mix/0
+mix/0.001
+mix/0.01
+mix/0.1
+
+//
+UPD_RATE
+SPLIT
+4
+0
+0.001
+0.01
+0.1
+
+//
+CLIENT_SIZE
+LOOP
+5
+//Values for variable, one per line
+2_24
+2_48
+2_72
+2_96
+2_120

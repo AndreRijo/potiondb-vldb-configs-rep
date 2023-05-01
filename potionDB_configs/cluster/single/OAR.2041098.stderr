@@ -1,0 +1,2 @@
+/var/lib/oar/.batch_job_bashrc: line 5: /home/arijo/.bashrc: No such file or directory
+## OAR [2021-09-29 08:58:13] Job 2041098 KILLED ##

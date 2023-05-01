@@ -1,0 +1,118 @@
+//Client IPs
+//Number of clients
+8
+//IPs
+dahu-3:6666
+dahu-4:6666
+dahu-5:6666
+dahu-6:6666
+dahu-7:6666
+dahu-8:6666
+dahu-9:6666
+dahu-10:6666
+
+//30+65+60=155
+//Test time (seconds)
+160
+//2
+//Number of tests
+12
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+11
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP
+//Number of entries for this variable
+3
+//Values for variable, one per line
+32
+64
+128
+
+//
+CLIENT_SIZE
+LOOP
+3
+//Values for variable, one per line
+2_32
+2_64
+2_128
+
+//
+TEST_NAME_PRE
+SPLIT
+4
+/go/results/1SF/dahu/8CPU/automated/individualQuery/tc/Q3/
+/go/results/1SF/dahu/8CPU/automated/individualQuery/tc/Q14/
+/go/results/1SF/dahu/8CPU/automated/individualQuery/tc/Q15/
+/go/results/1SF/dahu/8CPU/automated/individualQuery/tc/Q18/
+///go/results/debug
+
+//
+CONFIG_EXTRA
+SPLIT
+4
+Q3/
+Q14/
+Q15/
+Q18/
+
+//
+INDEX_NAME
+SPLIT
+1
+localIndex_direct
+
+//
+IS_GLOBAL
+LOOP
+1
+false
+
+//
+SINGLE_SERVER
+LOOP
+1
+false
+
+//
+LOCAL_MODE
+SPLIT
+1
+direct
+
+//
+UPD_RATE
+SPLIT
+1
+0
+
+//
+N_READS_TXN
+LOOP
+1
+23
+
+//
+USE_TC
+LOOP
+1
+true

@@ -1,0 +1,814 @@
+docker pull andrerj/priv:potiondb_bench ; cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode passive
+docker pull andrerj/priv:tpch ; cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode active
+docker pull andrerj/priv:tpch ; cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6668 --saveLog true --mode active
+
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode active
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6668 --saveLog true --mode active
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode passive
+
+Should I also do these for TopSum. (TOPK part, before the ; is done for 0)
+21-25|7-11,19-23|8-12,21-25|10-13,24-27
+17,19,21|9-11,21-23|10-13,24-27|9,12,13,23,26,27
+23,26|9,22|9,20|9,12,23,26
+19,21,23,24,25,27,29,31,33|2,4,5,6,8,9,10,12,14,16,23,25,26,27,29,30,31,33,35,37|2,4,5,6,8,9,10,12,14,16,23,25,26,27,29,30,31,33,35,37|0,2,4,5,6,8,10,12,14,19,21,23,24,25,27,29,31,33
+
+0 upd:
+8-12 ; 21-25
+4,6,8 ; 17, 19, 21
+9,12 ; 23,26
+0,2,4,5,6,8,10,12,14 ; 19,21,23,24,25,27,29,31,33
+
+0.01 upd:
+10-13 ; 24-27
+9,12,13 ; 23,26,27
+9,12 ; 23,26
+0,2,4,5,6,8,10,12,14 ; 19,21,23,24,25,27,29,31,33
+
+0.1 upd:
+7-11 ; 19-23
+9-11 ; 21-23
+9 ; 22
+2,4,5,6,8,9,10,12,14,16 ; 23,25,26,27,29,30,31,33,35,37
+
+0.25 upd:
+8-12 ; 21-25
+10-13 ; 24-27
+9 ; 20
+2,4,5,6,8,9,10,12,14,16 ; 23,25,26,27,29,30,31,33,35,37
+
+--repair "-|all|-|-|all|all|-|-|-|-|all|all|all|-|-|all"
+--repair "all|all|all|-|-|all"
+
+I'm lazy... I'll just repeat all.
+do: topK_10_P1[0], topK_10_P3, topK_1000_P1[0,, . Then do Untitled 7.txt
+
+
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 5,6,7,8,9,10 --nodes "dahu-10:6666,dahu-11:6666,dahu-12:6666,dahu-14:6666,dahu-15:6666,dahu-17:6666,dahu-19:6666,dahu-20:6666,dahu-21:6666,dahu-23:6666,dahu-17:6668" --repair "19-29|all|all"
+16
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+
+true
+true
+true
+true
+
+
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P1.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P2.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P3.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1_P6.txt
+
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P1.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P2.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P3.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_10_P6.txt
+
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P1.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P2.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P3.txt
+
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_100_P6.txt
+
+
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.11:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.12:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.14:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P1.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P2.txt
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P3.txt
+
+
+
+0
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R1 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.10:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+1
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R2 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.12:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.11:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+2
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R3 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.14:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.12:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+3
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R4 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.15:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.14:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+4
+docker rm potiondb ; sleep 1s ; docker run --cap-add=NET_ADMIN --ulimit nofile=1000000:1000000 -d -p 8087:8087 -p 5672:5672 -v "/home/arijo/private/potionDB/configs/cluster/:/go/bin/configs/cluster/" -e CONFIG=/go/bin/configs/cluster/tc_new/R5 -e TOPK_SIZE=#TOP_SIZE# -e SERVERS=[172.16.20.10:5672,172.16.20.11:5672,172.16.20.12:5672,172.16.20.14:5672] -e TC_IPS=[172.16.20.10,172.16.20.11,172.16.20.12,172.16.20.14,172.16.20.15] -e DISABLE_READ_WAITING=true -e SELF_IP=172.16.20.15:8087 -e USE_TC=false -e POOL_MAX=0 -e DO_DATALOAD=false --name potiondb andrerj/priv:potiondb_bench
+docker stop -t 1 potiondb ; docker logs potiondb
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+5
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=0 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+6
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=1 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+7
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=2 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+8
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=3 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+9
+sleep 5s ; docker rm tpch1 ; docker run --ulimit nofile=1000000:1000000 --name tpch1 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true andrerj/priv:tpch
+docker stop -t 1 tpch1 ; docker logs tpch1
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+10
+sleep 5s ; docker rm tpch2 ; docker run --ulimit nofile=1000000:1000000 --name tpch2 -v "/home/arijo/private/tpch_client/configs/cluster/:/go/configs/cluster/" -v "/home/arijo/private/results/:/go/results/" -e CONFIG=/go/configs/cluster/BENCH/#CONFIG_EXTRA#/ -e TEST_NAME=#TEST_NAME_PRE#/TOP_S#TOP_SIZE#/#UPD_RATE#/#CLIENT_SIZE#/ -e QUERY_CLIENTS=#N_QUERY_CLIENTS# -e UPD_RATE=#UPD_RATE# -e NON_RANDOM_SERVERS=true -e ID=4 -e SERVERS=[172.16.20.10:8087,172.16.20.11:8087,172.16.20.12:8087,172.16.20.14:8087,172.16.20.15:8087] -e B_N_KEYS=#KEYS# -e B_CRDT_TYPE=#CRDT_TYPE# -e B_OPS_PER_TXN=#OPS_PER_TXN# -e B_UPDATE_FUNS=#UPDATE_FUNCS# -e B_QUERY_FUNS=#QUERY_FUNCS# -e B_TOP_N=#TOP_SIZE# -e IS_BENCH=true -e B_DO_PRELOAD=true -e B_DO_QUERY=false andrerj/priv:tpch
+docker stop -t 1 tpch2 ; docker logs tpch2
+/home/arijo/private/DockerManager/tests/grid/crdtTestTpch/topSize/topK_1000_P6.txt
+
+

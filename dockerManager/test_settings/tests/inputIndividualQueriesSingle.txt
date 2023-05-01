@@ -1,0 +1,158 @@
+//Client IPs
+//Number of clients
+9
+//IPs
+node1:6666
+node2:6666
+node3:6666
+node4:6666
+node5:6666
+node6:6666
+node7:6666
+node8:6666
+node6:6676
+//localhost:1111
+//localhost:2222
+//localhost:3333
+//localhost:4444
+//localhost:5555
+//localhost:6666
+//localhost:7777
+//localhost:8888
+//localhost:9999
+
+//Updates: node8:6666
+//Second query: node6:6667
+//Test time (seconds)
+400
+//2
+//Number of tests
+216
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-215
+0-215
+0-215
+0-215
+0-215
+0-215
+0-215
+18-35,54-71,90-107,126-143,162-179,198-215
+0-215
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+8
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP
+//Number of entries for this variable
+18
+//Values for variable, one per line
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+28
+32
+36
+40
+48
+56
+
+
+//
+TEST_NAME_PRE
+SPLIT
+6
+/go/results/1SF/2_April/8CPU/automated/Q3
+/go/results/1SF/2_April/8CPU/automated/Q5
+/go/results/1SF/2_April/8CPU/automated/Q11
+/go/results/1SF/2_April/8CPU/automated/Q14
+/go/results/1SF/2_April/8CPU/automated/Q15
+/go/results/1SF/2_April/8CPU/automated/Q18
+///go/results/debug
+
+//
+CONFIG_EXTRA
+SPLIT
+6
+Q3/
+Q5/
+Q11/
+Q14/
+Q15/
+Q18/
+
+//
+INDEX_NAME
+LOOP
+1
+singleIndex
+
+//
+IS_GLOBAL
+LOOP
+1
+true
+
+//
+SINGLE_SERVER
+LOOP
+1
+true
+
+//
+TEST_TYPE
+SPLIT
+12
+queryOnly
+updateQuery
+queryOnly
+updateQuery
+queryOnly
+updateQuery
+queryOnly
+updateQuery
+queryOnly
+updateQuery
+queryOnly
+updateQuery
+
+//
+CLIENT_SIZE
+LOOP
+18
+//Values for variable, one per line
+2_2
+2_4
+2_6
+2_8
+2_10
+2_12
+2_14
+2_16
+2_18
+2_20
+2_22
+2_24
+2_28
+2_32
+2_36
+2_40
+2_48
+2_56

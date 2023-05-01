@@ -1,0 +1,131 @@
+//Client IPs
+//Number of clients
+9
+//IPs
+node1:6666
+node2:6666
+node3:6666
+node4:6666
+node5:6666
+node6:6666
+node7:6666
+node8:6666
+node6:6676
+//localhost:1111
+//localhost:2222
+//localhost:3333
+//localhost:4444
+//localhost:5555
+//localhost:6666
+//localhost:7777
+//localhost:8888
+//localhost:9999
+
+//Updates: node8:6666
+//Second query: node6:6667
+//Test time (seconds)
+360
+//2
+//Number of tests
+56
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-55
+0-55
+0-55
+0-55
+0-55
+0-55
+0-55
+28-55
+0-13,28-41
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nTests % nVariables must be 0.
+
+//Number of variables
+6
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP
+//Number of entries for this variable
+14
+//Values for variable, one per line
+2
+4
+6
+8
+10
+16
+20
+28
+32
+36
+40
+44
+52
+56
+
+//
+TEST_NAME_PRE
+LOOP
+1
+/go/results/1SF/2_April/8CPU/automated
+///go/results/debug
+
+//
+INDEX_NAME
+LOOP
+1
+localIndex
+
+//
+IS_GLOBAL
+LOOP
+1
+false
+
+//
+TEST_TYPE
+SPLIT
+2
+queryOnly
+updateQuery
+
+//
+CLIENT_SIZE
+LOOP
+28
+//Values for variable, one per line
+2_2
+2_4
+2_6
+2_8
+2_10
+2_16
+2_20
+2_28
+2_32
+2_36
+2_40
+2_44
+2_52
+2_56
+1_2
+1_4
+1_6
+1_8
+1_10
+1_16
+1_20
+1_28
+1_32
+1_36
+1_40
+1_44
+1_52
+1_56

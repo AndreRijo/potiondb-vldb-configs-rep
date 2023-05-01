@@ -1,0 +1,98 @@
+//Client IPs
+//Number of clients
+2
+//IPs
+node5:6666
+node6:6666
+
+//Test time (seconds)
+85
+//2
+//Number of tests
+640
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+0-639
+0-639
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+7
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_0
+//Number of entries for this variable
+8
+//Values for variable, one per line
+12
+24
+36
+48
+60
+72
+84
+96
+
+//
+TEST_NAME_PRE
+SPLIT
+1
+/go/results/1SF/2_April/8CPU/automated/bench/set1000/keysUpdTest
+///go/results/debug
+
+//
+N_KEYS
+LOOP_3
+4
+192
+768
+1920
+19200
+
+//
+KEY_TYPE
+SPLIT
+2
+SHARED
+SPLIT
+
+//
+OPS_PER_TXN
+LOOP_2
+2
+1
+100
+
+//
+UPD_RATE
+LOOP_1
+5
+0.01
+0.05
+0.1
+0.5
+1
+
+
+//
+CLIENT_SIZE
+LOOP_0
+8
+//Values for variable, one per line
+2_12
+2_24
+2_36
+2_48
+2_60
+2_72
+2_84
+2_96
+
+
+//keyType -> opsPerTxn -> update_rates -> clients
