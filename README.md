@@ -8,4 +8,4 @@ If you crossed upon here randomly, you will probably want to check these reposit
 - [DockerManager](https://github.com/AndreRijo/DockerManager)
 
 This repository acts as the storage for all of the configurations used to evaluate PotionDB during the production of our Eurosys submission.
-It contains configuration files for botth PotionDB, TPC-H Client and DockerManager.
+It contains configuration files for both PotionDB, TPC-H Client and DockerManager.
