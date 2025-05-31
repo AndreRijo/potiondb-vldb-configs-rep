@@ -14,12 +14,12 @@ dahu-23:6666
 dahu-26:6666
 dahu-19:6668
 
-//30+65+60=155
+//17+35=52. Round to 60.
 //Test time (seconds)
-160
+80
 //2
 //Number of tests
-16
+17
 //Tests each node will do (same order as the one defined in IPs)
 //Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
 all
@@ -47,7 +47,7 @@ N_QUERY_CLIENTS
 //Repeat type
 LOOP
 //Number of entries for this variable
-16
+17
 //Values for variable, one per line
 4
 8
@@ -65,11 +65,12 @@ LOOP
 144
 160
 192
+256
 
 //
 CLIENT_SIZE
 LOOP_0
-16
+17
 //Values for variable, one per line
 5_4
 5_8
@@ -87,21 +88,15 @@ LOOP_0
 5_144
 5_160
 5_192
+5_256
 
 //
 TEST_NAME_PRE
 LOOP_1
 1
-/go/results/1SF/dahu/5MIX/automated/redo/individualQuery/noTC/Q5/
-///go/results/1SF/dahu/5MIX/automated/redo/individualQuery/noTC/Q11/
-///go/results/debug
-
-//
-CONFIG_EXTRA
-LOOP_1
-1
-Q5/
-//Q11/
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/individualQuery/noTC/Q5
+///go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/individualQuery/noTC/Q11
+///go/results/debugs
 
 //
 INDEX_NAME
@@ -139,6 +134,12 @@ LOOP
 1
 1
 //23
+
+//
+QUERIES
+LOOP_1
+1
+5
 
 //
 USE_TC

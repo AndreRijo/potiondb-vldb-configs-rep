@@ -1,32 +1,38 @@
 //Client IPs
 //Number of clients
-8
+11
 //IPs
-dahu-1:6666
+dahu-4:6666
+dahu-5:6666
+dahu-6:6666
+dahu-7:6666
+dahu-8:6666
+dahu-9:6666
 dahu-10:6666
 dahu-11:6666
 dahu-12:6666
-dahu-14:6666
-dahu-15:6666
-dahu-16:6666
-dahu-17:6666
+dahu-13:6666
+dahu-9:6668
 
 //30+65+60=155
 //Test time (seconds)
 160
 //2
 //Number of tests
-13
+12
 //Tests each node will do (same order as the one defined in IPs)
 //Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
-0-12
-0-12
-0-12
-0-12
-0-12
-0-12
-0-12
-0-12
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
+0-11
 
 
 //REPEAT TYPES:
@@ -41,46 +47,44 @@ N_QUERY_CLIENTS
 //Repeat type
 LOOP
 //Number of entries for this variable
-13
+12
 //Values for variable, one per line
+4
 8
+12
 16
+20
 24
+28
 32
-40
 48
-56
 64
-80
 96
-112
 128
-256
 
 //
 CLIENT_SIZE
 LOOP
-13
+12
 //Values for variable, one per line
+2_4
 2_8
+2_12
 2_16
+2_20
 2_24
+2_28
 2_32
-2_40
 2_48
-2_56
 2_64
-2_80
 2_96
-2_112
 2_128
-2_256
 
 //
 TEST_NAME_PRE
 SPLIT
 1
-/go/results/1SF/dahu/8CPU/automated/test/noTC_global
+/go/results/1SF/dahu/5MIX/automated/test/noTC_global
 ///go/results/debug
 
 //

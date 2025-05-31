@@ -1,0 +1,147 @@
+//Client IPs
+//Number of clients
+2
+//IPs
+dahu-1:6666
+dahu-2:6666
+
+//39+30+40=109
+//Test time (seconds)
+115
+//2
+//Number of tests
+30
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+all
+all
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+12
+
+//Variable name
+CLIENTS
+//Repeat type
+LOOP
+//Number of entries for this variable
+15
+//Values for variable, one per line
+5
+10
+20
+30
+40
+45
+50
+55
+60
+65
+70
+75
+80
+85
+90
+
+//
+CLIENT_SIZE
+LOOP
+15
+//Values for variable, one per line
+5
+10
+20
+30
+40
+45
+50
+55
+60
+65
+70
+75
+80
+85
+90
+
+//
+N_UPDATE_CLIENTS
+LOOP
+15
+1
+2
+4
+6
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+
+//
+TEST_NAME_PRE
+SPLIT
+2
+/go/results/1SF/Postgres/automated/paper/noTC/ramdisk/clientScale/0.2updClients/q11/
+/go/results/1SF/Postgres/automated/paper/noTC/ramdisk/clientScale/0.2updClients/q15/
+
+//
+UPD_RATE
+SPLIT
+1
+0.2
+
+//
+IS_REDIRECT
+SPLIT
+1
+false
+
+//
+N_READS_TXN
+LOOP
+1
+1
+
+//
+USE_TC
+LOOP
+1
+false
+
+//
+QUERIES
+SPLIT
+2
+11
+15
+
+//
+SLEEP
+SPLIT
+1
+43s
+
+//
+QUERY_WAIT
+SPLIT
+1
+23000
+
+//
+N_REPEATS
+SPLIT
+1
+0
+//1
+//2

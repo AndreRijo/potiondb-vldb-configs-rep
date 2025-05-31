@@ -2,14 +2,14 @@
 //Number of clients
 8
 //IPs
+dahu-10:6666
+dahu-11:6666
+dahu-12:6666
+dahu-13:6666
 dahu-14:6666
-dahu-15:6666
-dahu-16:6666
-dahu-17:6666
 dahu-21:6666
 dahu-22:6666
 dahu-23:6666
-dahu-24:6666
 
 //30+65+60=155
 //Test time (seconds)

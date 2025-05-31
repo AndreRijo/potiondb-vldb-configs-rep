@@ -1,0 +1,155 @@
+//Client IPs
+//Number of clients
+11
+//IPs
+dahu-14:6666
+dahu-13:6666
+dahu-16:6666
+dahu-17:6666
+dahu-18:6666
+dahu-19:6666
+dahu-21:6666
+dahu-22:6666
+dahu-23:6666
+dahu-26:6666
+dahu-19:6668
+
+//30+65+60=155
+//Test time (seconds)
+150
+//2
+//Number of tests
+108
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+11
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_0
+//Number of entries for this variable
+18
+//Values for variable, one per line
+5
+8
+16
+24
+32
+40
+48
+56
+64
+72
+80
+88
+96
+112
+128
+160
+192
+256
+
+
+//
+CLIENT_SIZE
+LOOP_0
+18
+//Values for variable, one per line
+5_5
+5_8
+5_16
+5_24
+5_32
+5_40
+5_48
+5_56
+5_64
+5_72
+5_80
+5_88
+5_96
+5_112
+5_128
+5_160
+5_192
+5_256
+
+//
+TEST_NAME_PRE
+LOOP_1
+2
+/go/results/1SF/dahu/5MIX/automated/fullQueriesIndividual/fullQueries_q3_q5_q11_q14_q15_q18/clientsScale/tc
+/go/results/1SF/dahu/5MIX/automated/fullQueriesIndividual/q20TopQ16Q22Array/complete/clientsScale/tc
+///go/results/debug
+
+//
+INDEX_NAME
+LOOP
+1
+singleIndex_redirect
+
+//
+IS_GLOBAL
+LOOP
+1
+true
+
+//
+SINGLE_SERVER
+LOOP
+1
+false
+
+//
+UPD_RATE
+SPLIT
+1
+0
+
+//
+N_READS_TXN
+LOOP
+1
+1
+//7
+
+//
+USE_TC
+LOOP
+1
+true
+
+//
+QUERIES
+LOOP_1
+2
+3,5,11,14,15,18
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
+
+//
+N_REPEATS
+SPLIT
+3
+0
+1
+2
+

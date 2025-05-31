@@ -16,10 +16,10 @@ dahu-19:6668
 
 //30+65+60=155
 //Test time (seconds)
-160
+180
 //2
 //Number of tests
-21
+25
 //Tests each node will do (same order as the one defined in IPs)
 //Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
 all
@@ -47,7 +47,7 @@ N_QUERY_CLIENTS
 //Repeat type
 LOOP
 //Number of entries for this variable
-21
+25
 //Values for variable, one per line
 64
 128
@@ -68,13 +68,17 @@ LOOP
 3072
 3584
 4096
+5120
 6144
 8192
+10240
+12288
+16384
 
 //
 CLIENT_SIZE
 LOOP
-21
+25
 //Values for variable, one per line
 5_64
 5_128
@@ -95,8 +99,12 @@ LOOP
 5_3072
 5_3584
 5_4096
+5_5120
 5_6144
 5_8192
+5_10240
+5_12288
+5_16384
 
 //
 TEST_NAME_PRE

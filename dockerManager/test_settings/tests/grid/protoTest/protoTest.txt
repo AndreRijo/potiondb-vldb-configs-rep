@@ -1,0 +1,124 @@
+//Client IPs
+//Number of clients
+2
+//IPs
+dahu-1:6666
+dahu-2:6666
+
+//50+40=90
+//Test time (seconds)
+120
+//2
+//Number of tests
+105
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+all
+all
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+12
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_2
+//Number of entries for this variable
+5
+//Values for variable, one per line
+96
+128
+160
+192
+256
+
+//
+CLIENT_SIZE
+LOOP_0
+1
+//Values for variable, one per line
+5_96
+
+//
+TEST_NAME_PRE
+LOOP_2
+5
+/go/results/debug/protoTest/96
+/go/results/debug/protoTest/128
+/go/results/debug/protoTest/160
+/go/results/debug/protoTest/192
+/go/results/debug/protoTest/256
+
+
+//
+INDEX_NAME
+LOOP_1
+7
+crdtMap
+stateMap
+marshallMap
+crdtVar
+mapVar
+marshallVar
+default
+
+//
+IS_GLOBAL
+LOOP
+1
+true
+
+//
+SINGLE_SERVER
+LOOP
+1
+true
+
+//
+UPD_RATE
+SPLIT
+1
+0
+
+//
+N_READS_TXN
+LOOP
+1
+1
+
+//
+USE_TC
+LOOP
+1
+false
+
+//
+QUERIES
+LOOP
+1
+5
+
+//
+PROTO_TEST_MODE
+LOOP_1
+7
+1
+2
+3
+4
+5
+6
+0
+
+//
+N_REPEATS
+SPLIT
+3
+0
+1
+2

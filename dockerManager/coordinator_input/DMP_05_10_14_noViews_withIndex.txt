@@ -1,0 +1,25 @@
+PostgresSQL setup:
+1st - install Postgres & extension: private/postgres_install_grid_ramdisk.sh
+2nd - load data: private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+
+
+
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode passive
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode active
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 1 --nodes "dahu-14:6666,dahu-15:6666" --repair "32-47,64-79,96-127,144-159"
+1
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/noViews/test.txt
+
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/noViews/test.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-12:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e USES_VIEWS=false -e TEST_NAME=#TEST_NAME_PRE#/repeat/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -e DOES_VIEWLOAD=false -e DOES_INDEXLOAD=true -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/noViews/test.txt
+

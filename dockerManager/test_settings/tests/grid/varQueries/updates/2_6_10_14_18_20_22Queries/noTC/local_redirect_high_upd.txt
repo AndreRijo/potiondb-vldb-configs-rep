@@ -1,0 +1,159 @@
+//Client IPs
+//Number of clients
+10
+//IPs
+dahu-1:6666
+dahu-2:6666
+dahu-3:6666
+dahu-4:6666
+dahu-5:6666
+dahu-6:6666
+dahu-7:6666
+dahu-8:6666
+dahu-9:6666
+dahu-10:6666
+
+//17+35=52. Round to 60.
+//Test time (seconds)
+90
+//2
+//Number of tests
+252
+//Tests each node will do (same order as the one defined in IPs)
+//Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
+all
+all
+all
+all
+all
+all
+all
+all
+all
+all
+
+
+//REPEAT TYPES:
+//LOOP: goes through list, repeat at end of list
+//SPLIT: does each entry n times before going to the next, such that nTests/nVariables = n. nVariables % nTests must be 0.
+
+//Number of variables
+12
+
+//Variable name
+N_QUERY_CLIENTS
+//Repeat type
+LOOP_0
+//Number of entries for this variable
+12
+//Values for variable, one per line
+4
+8
+12
+16
+20
+24
+28
+32
+36
+40
+48
+56
+
+//
+CLIENT_SIZE
+LOOP_0
+12
+//Values for variable, one per line
+5_4
+5_8
+5_12
+5_16
+5_20
+5_24
+5_28
+5_32
+5_36
+5_40
+5_48
+5_56
+
+//
+TEST_NAME_PRE
+LOOP_2
+7
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/2Queries/clientsScale/noTC
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/6Queries/clientsScale/noTC
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/10Queries/clientsScale/noTC
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/14Queries/clientsScale/noTC
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/18Queries/clientsScale/noTC
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/20Queries/clientsScale/noTC
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/22Queries/clientsScale/noTC
+///go/results/debug
+
+//
+INDEX_NAME
+SPLIT
+1
+localIndex_server_postFix
+
+//
+IS_GLOBAL
+LOOP
+1
+false
+
+//
+SINGLE_SERVER
+LOOP
+1
+false
+
+//
+LOCAL_MODE
+SPLIT
+1
+//direct
+server
+
+//
+UPD_RATE
+LOOP_1
+3
+0.1
+0.15
+0.25
+
+//
+N_READS_TXN
+LOOP
+1
+1
+//23
+
+//
+USE_TC
+LOOP
+1
+false
+
+//
+QUERIES
+LOOP_2
+7
+3,18
+3,5,11,14,15,18
+2,3,4,5,11,14,15,17,18,21
+2,3,4,5,6,8,10,11,14,15,17,18,19,21
+1,2,3,4,5,6,8,9,10,11,12,13,14,15,17,18,19,21
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
+
+//
+N_REPEATS
+SPLIT
+1
+0
+//1
+//2
+

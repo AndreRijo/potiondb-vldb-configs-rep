@@ -1,0 +1,165 @@
+PostgresSQL setup:
+1st - install Postgres & extension: private/postgres_install_grid_ramdisk.sh
+2nd - load data: private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+Note: 2nd step is already done by the tests.
+
+//Done 1st test until 7/48 (inclusive).
+//0.0001 upd: until 7/11
+//0.0005 upd: until 7/12
+
+docker pull andrerj/priv:postgresclient
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode passive
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin ClientMain --coordConfigs true --port 6666 --saveLog true --mode active
+cd ~/private ; java -cp /home/arijo/private/DockerManager/bin/ CoordinatorMain --coordConfigs true --waitfor 1 --nodes "dahu-10:6666,dahu-11:6666" --autorepair true --repair "0,2"
+9
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_8q_1upd.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_8q_1upd.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_8q_0upd.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_8q_0upd.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_001.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_001.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_005.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_005.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_01.txt
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_01.txt
+
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_8q_1upd.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e TEST_NAME=#TEST_NAME_PRE#/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_8q_1upd.txt
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_8q_1upd.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e USES_VIEWS=false -e TEST_NAME=#TEST_NAME_PRE#/repeat/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -e DOES_VIEWLOAD=false -e DOES_INDEXLOAD=true -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_8q_1upd.txt
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_8q_0upd.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e TEST_NAME=#TEST_NAME_PRE#/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_8q_0upd.txt
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_8q_0upd.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e USES_VIEWS=false -e TEST_NAME=#TEST_NAME_PRE#/repeat/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -e DOES_VIEWLOAD=false -e DOES_INDEXLOAD=true -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_8q_0upd.txt
+
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e TEST_NAME=#TEST_NAME_PRE#/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd.txt
+
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_001.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e TEST_NAME=#TEST_NAME_PRE#/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_001.txt
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_001.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e USES_VIEWS=false -e TEST_NAME=#TEST_NAME_PRE#/repeat/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -e DOES_VIEWLOAD=false -e DOES_INDEXLOAD=true -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_001.txt
+
+
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_005.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e TEST_NAME=#TEST_NAME_PRE#/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_005.txt
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_005.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e USES_VIEWS=false -e TEST_NAME=#TEST_NAME_PRE#/repeat/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -e DOES_VIEWLOAD=false -e DOES_INDEXLOAD=true -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_005.txt
+
+
+
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_01.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e TEST_NAME=#TEST_NAME_PRE#/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/allQueries_mix_upd_0_01.txt
+
+
+//Server
+0
+/home/arijo/private/setupDB_ramdisk.sh /media/ramdisk/pgsql/bin/ /home/arijo/private/ /home/arijo/private/tpch_data/tables/1SF/
+echo ""
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_01.txt
+//Client
+1
+sleep #SLEEP# ; docker stop -t 0 postgresclient1 ; docker rm postgresclient1 ; docker run -e CONFIG=/go/configs/cluster/1SF/ALL/ -e IP=dahu-10:5432 -e USER=arijo -e QUERY_CLIENTS=#CLIENTS# -e IS_REDIRECT=false -e QUERY_WAIT=#QUERY_WAIT# -e QUERY_DURATION=40000 -e UPD_RATE=#UPD_RATE# -e UPDATE_SPECIFIC_INDEX=true -e N_UPD_CLIENTS=#N_UPDATE_CLIENTS# -e USES_VIEWS=false -e TEST_NAME=#TEST_NAME_PRE#/repeat/upd_#UPD_RATE#/#CLIENT_SIZE#/ -e QUERIES=[#QUERIES#] -e DOES_VIEWLOAD=false -e DOES_INDEXLOAD=true -v "/home/arijo/private/tpch_data/:/go/data/" -v "/home/arijo/private/results/:/go/results/" --name postgresclient1 andrerj/priv:postgresclient
+docker stop -t 1 postgresclient1 ; docker logs postgresclient
+/home/arijo/private/DockerManager/tests/grid/postgres/direct/clientsScale/newPostgresUpds/index_allQueries_mix_upd_0_01.txt
+

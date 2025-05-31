@@ -19,20 +19,20 @@ dahu-19:6668
 80
 //2
 //Number of tests
-24
+16
 //Tests each node will do (same order as the one defined in IPs)
 //Use ranges (e.g, 0-7), and chain them with "," (e.g, 0-7,16-23)
-0-23
-0-23
+all
+all
 -
 -
 -
-0-23
-0-23
-0-23
-0-23
-0-23
-0-23
+all
+all
+all
+all
+all
+all
 
 
 //REPEAT TYPES:
@@ -47,11 +47,8 @@ N_QUERY_CLIENTS
 //Repeat type
 LOOP_0
 //Number of entries for this variable
-12
-//Values for variable, one per line
-4
 8
-12
+//Values for variable, one per line
 16
 18
 20
@@ -60,16 +57,12 @@ LOOP_0
 28
 32
 36
-40
 
 //
 CLIENT_SIZE
 LOOP_0
-12
+8
 //Values for variable, one per line
-5_4
-5_8
-5_12
 5_16
 5_18
 5_20
@@ -78,7 +71,6 @@ LOOP_0
 5_28
 5_32
 5_36
-5_40
 
 //
 TEST_NAME_PRE

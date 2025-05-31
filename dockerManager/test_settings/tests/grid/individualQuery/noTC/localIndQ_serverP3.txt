@@ -14,9 +14,9 @@ dahu-23:6666
 dahu-26:6666
 dahu-19:6668
 
-//30+65+60=155
+//17+35=52. Round to 60.
 //Test time (seconds)
-160
+80
 //2
 //Number of tests
 13
@@ -86,16 +86,10 @@ LOOP_0
 TEST_NAME_PRE
 LOOP_1
 1
-/go/results/1SF/dahu/5MIX/automated/redo/individualQuery/noTC/Q3/
-///go/results/1SF/dahu/5MIX/automated/redo/individualQuery/noTC/Q18/
+/go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/individualQuery/noTC/Q3
+///go/results/1SF/dahu/5MIX/automated/varQueries_arrayData/individualQuery/noTC/Q18
 ///go/results/debug
 
-//
-CONFIG_EXTRA
-LOOP_1
-1
-Q3/
-//Q18/
 
 //
 INDEX_NAME
@@ -133,6 +127,12 @@ LOOP
 1
 1
 //23
+
+//
+QUERIES
+LOOP_1
+1
+3
 
 //
 USE_TC
