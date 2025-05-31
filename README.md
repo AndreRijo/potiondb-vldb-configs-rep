@@ -6,5 +6,5 @@ If you crossed upon here randomly, you will probably want to check these reposit
 - [PotionDB's TPC-H Client](https://github.com/AndreRijo/TPCH-Client)
 - [DockerManager](https://github.com/AndreRijo/DockerManager)
 
-This repository acts as the storage for all of the configurations used to evaluate PotionDB during the production of our Eurosys submission.
+This repository acts as the storage for all of the configurations used to evaluate PotionDB during the production of our VLDB submission.
 It contains configuration files for both PotionDB, TPC-H Client and DockerManager.
